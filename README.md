@@ -1,36 +1,30 @@
 # Has-Needs Protocol
 
-> World-First Protocol for Emergent Coordination, Circular Economy, and Digital Self-Determination
+## ⚠️ Private Repository
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+This is a private repository. Access is strictly limited to authorized individuals who have been explicitly granted permission by the project maintainers.
+
+## Overview
+
+The Has-Needs Protocol is a proprietary system for managing and coordinating resources through a decentralized network. This project includes a 3D globe interface for visualizing and interacting with resource data.
+
+[![License](https://img.shields.io/badge/License-Proprietary-blue.svg)](LICENSE)
 [![Node.js Version](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen.svg)](https://nodejs.org/)
 
-Has-Needs is the world's first protocol for sovereign, circular, and crisis-resilient coordination. It harnesses value, instantly surfaces ability and need, and builds trust through verified action. Built on mature technologies and ready for immediate deployment.
+## Access Control
 
-## 🌟 Key Features
+- **Status**: Private and invite-only
+- **Contributions**: Currently closed to external contributions
+- **Issues**: Limited to invited participants for discussion
+- **Code Review**: Conducted internally by the core team
 
-- **🔐 Enforced Sovereignty**: Permanent agency for individuals and communities over their data and knowledge
-- **🧠 Living Ontology**: Categories emerge organically from validated actions, not imposed structures
-- **🎯 Triple Function Data**: Every triplet serves ontology production, value records, and AI-readable data
-- **🕸️ Jitterbug Topology**: Self-healing mesh network based on Buckminster Fuller's tensegrity concepts
-- **📚 Knowledge Overlays**: Compartmentalized wisdom sharing with granular access control
-- **⚡ Event-by-Event Validation**: No persistent reputation scores, context-bound verification only
+## Getting Started
 
-## 🚀 Quick Start
+For authorized contributors, see [GETTING_STARTED.md](GETTING_STARTED.md) for development setup instructions.
 
-### Installation
+## Security
 
-```bash
-# Clone the repository
-git clone https://github.com/your-org/has-needs-live.git
-cd has-needs-live
-
-# Install dependencies
-npm install
-
-# Run the basic example
-npm run example
-```
+Please report any security issues to security@has-needs.org. Do not create public issues for security vulnerabilities.
 
 ### Basic Usage
 
@@ -108,14 +102,9 @@ Every interaction is captured as a triplet with three core relations:
 }
 ```
 
-## 📖 Documentation
+## License
 
-### Core Concepts
-
-- **Sovereignty**: Every participant maintains full control over their data and interactions
-- **Circularity**: Value flows in closed loops, preventing extraction without contribution
-- **Emergence**: Categories and protocols arise from real-world validated actions
-- **Resilience**: Self-healing network topology adapts to changing conditions
+This project is proprietary and confidential. All rights reserved. See [LICENSE](LICENSE) for more information.
 
 ### API Reference
 
@@ -286,9 +275,9 @@ const knowledgeOverlay = await overlays.createOverlay(
 - **Resilience**: Self-healing network adapts to 50%+ node failures
 - **Efficiency**: Minimal resource usage with purpose-built architecture
 
-## 🤝 Contributing
+## Contact
 
-We welcome contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+For access requests or questions, please contact: contact@has-needs.org
 
 ### Development Setup
 
@@ -307,28 +296,6 @@ We welcome contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guid
 - Comprehensive error handling
 - Extensive logging and debugging
 
-## 📜 License
+## Privacy
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🙏 Acknowledgements
-
-This work draws inspiration from:
-
-- **R. Buckminster Fuller** - Tensegrity and jitterbug geometry
-- **Paolo Soleri** - Arcology and emergence
-- **Indigenous Knowledge Systems** - Sovereignty and circular wisdom
-- **The Dawn of Everything** - Graeber and Wengrow's vision of human possibilities
-
-## 🔗 Links
-
-- **White Paper**: [Has-Needs Protocol Specification](docs/whitepaper.md)
-- **API Documentation**: [API Reference](docs/api.md)
-- **Examples**: [Usage Examples](examples/)
-- **Community**: [Discussions](https://github.com/your-org/has-needs-live/discussions)
-
----
-
-> "Has-Needs transforms coordination from extractive surveillance to sovereign empowerment, enabling truly adaptive collective intelligence through validated action and circular value flow."
-
-Built with ❤️ for a more resilient, equitable, and sovereign digital future.
+This project is private and confidential. See [PRIVACY.md](PRIVACY.md) for more information about access controls and data handling.
