@@ -1,0 +1,26 @@
+{
+  "name": "has-needs-app",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@dxos/client": "^0.8.3",
+    "@dxos/echo-schema": "0.8.3",
+    "@dxos/react-client": "^0.8.3",
+    "@dxos/react-components": "^0.1.40",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
+    "@vitejs/plugin-react": "^4.0.0",
+    "typescript": "^5.0.0",
+    "vite": "^7.0.2",
+    "vite-plugin-wasm": "^3.4.1"
+  },
+  "scripts": {
+    "dev": "npx vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  }
+}
