@@ -1,0 +1,22 @@
+/* src/styles/PersonalGlobe.css */
+.personal-globe-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: #1a1a2e; /* Dark background for globe */
+    color: #e0e0e0;
+    border-radius: 8px;
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+.globe-placeholder {
+    font-size: 1.5em;
+    margin-bottom: 10px;
+}
+
+.globe-icons {
+    font-size: 1.2em;
+}
