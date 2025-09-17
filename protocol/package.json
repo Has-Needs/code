@@ -1,0 +1,80 @@
+{
+  "name": "has-needs-protocol",
+  "version": "0.1.0",
+  "description": "World-First Protocol for Emergent Coordination, Circular Economy, and Digital Self-Determination",
+  "main": "src/index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "nodemon src/index.js",
+    "start": "node src/index.js",
+    "test": "vitest",
+    "test:ui": "vitest --ui",
+    "test:coverage": "vitest run --coverage",
+    "build": "rollup -c",
+    "lint": "eslint src/**/*.js",
+    "lint:fix": "eslint src/**/*.js --fix",
+    "format": "prettier --write src/**/*.js",
+    "docs:dev": "vitepress dev docs",
+    "docs:build": "vitepress build docs",
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": [
+    "has-needs",
+    "protocol",
+    "decentralized",
+    "nextgraph",
+    "sovereign",
+    "coordination",
+    "circular-economy",
+    "mesh-network",
+    "overlays",
+    "triplets"
+  ],
+  "author": "omdesign",
+  "license": "MIT",
+  "dependencies": {
+    "@noble/curves": "^1.2.0",
+    "@noble/hashes": "^1.3.3",
+    "libp2p": "^1.1.1",
+    "@libp2p/webrtc": "^4.0.0",
+    "@libp2p/websockets": "^8.0.0",
+    "@libp2p/mplex": "^10.0.0",
+    "@libp2p/noise": "^15.0.0",
+    "@libp2p/kad-dht": "^12.0.0",
+    "@libp2p/mdns": "^10.0.0",
+    "multiformats": "^13.0.0",
+    "uint8arrays": "^5.0.0",
+    "nanoid": "^5.0.4",
+    "eventemitter3": "^5.0.1",
+    "debug": "^4.3.4"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "@typescript-eslint/eslint-plugin": "^6.13.0",
+    "@typescript-eslint/parser": "^6.13.0",
+    "eslint": "^8.54.0",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-prettier": "^5.0.0",
+    "nodemon": "^3.0.2",
+    "prettier": "^3.1.0",
+    "rollup": "^4.6.0",
+    "@rollup/plugin-node-resolve": "^15.2.0",
+    "@rollup/plugin-commonjs": "^25.0.0",
+    "typescript": "^5.3.0",
+    "vitest": "^1.0.0",
+    "@vitest/ui": "^1.0.0",
+    "@vitest/coverage-v8": "^1.0.0",
+    "vitepress": "^1.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/omdesign/has-needs-live.git"
+  },
+  "bugs": {
+    "url": "https://github.com/omdesign/has-needs-live/issues"
+  },
+  "homepage": "https://github.com/omdesign/has-needs-live#readme"
+}
