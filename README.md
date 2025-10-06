@@ -77,15 +77,15 @@ node.protocol.on('match:found', ({ need, has }) => {
 Every interaction is captured as a triplet with three core relations:
 
 - **`has`**: Entity possesses/controls and offers something
-- **`needs`**: Entity expresses a requirement/request
-- **`committed`**: Mutual entry into a contract/agreement
+- **`need`**: Entity expresses a requirement/request
+- **`working`**: Mutual entry into a contract/agreement and Smart Contract executing
 
 ```javascript
 // Example triplet
 {
   id: "triplet_12345",
   entity: "alice@community.org",
-  relation: "needs",
+  relation: "need",
   object: "emergency shelter",
   context: {
     location: { lat: 37.7749, lng: -122.4194 },
