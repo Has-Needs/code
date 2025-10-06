@@ -1,21 +1,17 @@
 # Has-Needs Protocol
 
-## ⚠️ Private Repository
-
-This is a private repository. Access is strictly limited to authorized individuals who have been explicitly granted permission by the project maintainers.
-
 ## Overview
 
-The Has-Needs Protocol is a proprietary system for managing and coordinating resources through a decentralized network. This project includes a 3D globe interface for visualizing and interacting with resource data.
+The Has-Needs Protocol is a system for managing and coordinating resources through a **completely** decentralized network. This project includes a 3D globe interface for visualizing and interacting with resource data.
 
 [![License](https://img.shields.io/badge/License-Proprietary-blue.svg)](LICENSE)
 [![Node.js Version](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen.svg)](https://nodejs.org/)
 
 ## Access Control
 
-- **Status**: Private and invite-only
-- **Contributions**: Currently closed to external contributions
-- **Issues**: Limited to invited participants for discussion
+- **Status**: Early days
+- **Contributions**: Currently limited access for external contributions
+- **Issues**: Limited to discussion
 - **Code Review**: Conducted internally by the core team
 
 ## Getting Started
