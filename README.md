@@ -20,7 +20,7 @@ For authorized contributors, see [GETTING_STARTED.md](GETTING_STARTED.md) for de
 
 ## Security
 
-Please report any security issues to security@has-needs.org. Do not create public issues for security vulnerabilities.
+Please report any security issues to discussions. Do not create public issues for security vulnerabilities.
 
 ### Basic Usage
 
