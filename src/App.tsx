@@ -27,7 +27,7 @@ const sampleEntries: Entry[] = [
     resourceType: 'Fresh Water',
     description: 'Clean drinking water source',
     userDID: 'did:user:provider1',
-    coordinates: { lat: 37.7849, lng: -122.4094 }, // ~1km north
+    coordinates: { lat: 37.7849, lng: -122.4094 }, // ~1km north of SF center
     timestamp: Date.now(),
     context: { quality: 'potable', quantity: 'unlimited' }
   },
@@ -37,7 +37,7 @@ const sampleEntries: Entry[] = [
     resourceType: 'Medical Supplies',
     description: 'Bandages and antiseptics needed',
     userDID: 'did:user:requester1',
-    coordinates: { lat: 37.7649, lng: -122.4294 }, // ~1km south
+    coordinates: { lat: 37.7649, lng: -122.4294 }, // ~1km south of SF center
     timestamp: Date.now(),
     context: { urgency: 'high', quantity: '50 units' }
   },
@@ -47,7 +47,7 @@ const sampleEntries: Entry[] = [
     resourceType: 'Solar Panels',
     description: 'Portable solar charging station',
     userDID: 'did:user:tech1',
-    coordinates: { lat: 37.7749, lng: -122.3994 }, // ~2km east
+    coordinates: { lat: 37.7849, lng: -122.3994 }, // ~2km east of SF center
     timestamp: Date.now(),
     context: { capacity: '500W', condition: 'new' }
   }
@@ -56,21 +56,21 @@ const sampleEntries: Entry[] = [
 const samplePeers: Peer[] = [
   {
     peerId: 'peer-1',
-    location: { lat: 37.7949, lng: -122.4194 }, // ~2km north
+    location: { lat: 37.7949, lng: -122.4194 }, // ~2km north of SF center
     trustLevel: 0.8,
     trustHops: 1,
     lastActive: Date.now()
   },
   {
     peerId: 'peer-2',
-    location: { lat: 37.7549, lng: -122.4194 }, // ~2km south
+    location: { lat: 37.7549, lng: -122.4194 }, // ~2km south of SF center
     trustLevel: 0.6,
     trustHops: 2,
     lastActive: Date.now()
   },
   {
     peerId: 'peer-3',
-    location: { lat: 37.7749, lng: -122.4394 }, // ~2km west
+    location: { lat: 37.7749, lng: -122.4394 }, // ~2km west of SF center
     trustLevel: 0.9,
     trustHops: 1,
     lastActive: Date.now()

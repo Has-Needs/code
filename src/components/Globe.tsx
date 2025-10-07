@@ -18,7 +18,7 @@ interface GlobeProps {
 }
 
 // Convert km to pixels (adjust scale as needed)
-const KM_TO_PX = 15;
+const KM_TO_PX = 50; // Increased for better visibility
 const MIN_ZOOM = 1; // 1km
 const MAX_ZOOM = 100; // 100km
 
@@ -35,11 +35,15 @@ export const Globe: React.FC<GlobeProps> = ({
   // Convert geographic coordinates to screen coordinates
   const geoToScreen = (lat: number, lng: number, centerLat: number, centerLng: number): { x: number; y: number } => {
     // Simple equirectangular projection for this demo
-    const latDiff = (lat - centerLat) * 111; // Rough km conversion (111km per degree)
-    const lngDiff = (lng - centerLng) * 111 * Math.cos(centerLat * Math.PI / 180);
+    // 1 degree latitude ≈ 111 km, 1 degree longitude varies by latitude
+    const kmPerDegreeLat = 111;
+    const kmPerDegreeLng = 111 * Math.cos(centerLat * Math.PI / 180);
 
-    // Scale by zoom level and convert to pixels
-    const scale = KM_TO_PX * (50 / zoomLevel);
+    const latDiff = (lat - centerLat) * kmPerDegreeLat;
+    const lngDiff = (lng - centerLng) * kmPerDegreeLng;
+
+    // Scale by zoom level (pixels per km)
+    const scale = KM_TO_PX * (25 / zoomLevel); // Base scale for 25km zoom
     return {
       x: latDiff * scale,
       y: -lngDiff * scale // Negative because screen Y increases downward
@@ -169,6 +173,7 @@ export const Globe: React.FC<GlobeProps> = ({
         {/* Has/Need entries */}
         {entries.map((entry) => {
           const screenPos = geoToScreen(entry.coordinates.lat, entry.coordinates.lng, center.lat, center.lng);
+          console.log(`Entry ${entry.id}:`, entry.coordinates, '->', screenPos); // Debug log
           return (
             <div
               key={entry.id}
