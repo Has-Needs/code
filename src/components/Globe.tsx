@@ -1,243 +1,274 @@
 /**
- * Has-Needs: Globe Component (UI)
- * -------------------------------
- * Interactive globe with zoom and pan functionality.
- * Shows user's location, entries, and peers with proper geographic positioning.
+ * Has-Needs: Globe Component (Simplified Leaflet Implementation)
+ * -----------------------------------------------------------
+ * Simplified Leaflet implementation for testing.
  */
 
-import React, { useState } from 'react';
-import { Entry, Peer, Coordinates } from '../lib/types';
+import React, { useEffect, useRef } from 'react';
 
 interface GlobeProps {
-  center: Coordinates;
-  entries: Entry[];
-  peers: Peer[];
+  center: { lat: number; lng: number };
+  entries: any[];
+  peers: any[];
   initialZoomRadiusKm?: number;
-  onEntryClick?: (entry: Entry) => void;
-  onPeerClick?: (peer: Peer) => void;
+  onEntryClick?: (entry: any) => void;
+  onPeerClick?: (peer: any) => void;
+  width?: number;
+  height?: number;
+  homeLocation?: { lat: number; lng: number };
+  onHomeClick?: () => void;
 }
-
-// Convert km to pixels (adjust scale as needed)
-const KM_TO_PX = 50; // Increased for better visibility
-const MIN_ZOOM = 1; // 1km
-const MAX_ZOOM = 100; // 100km
 
 export const Globe: React.FC<GlobeProps> = ({
   center,
   entries,
   peers,
-  initialZoomRadiusKm = 25,
-  onEntryClick,
-  onPeerClick
+  width = 740,
+  height = 540,
+  homeLocation,
+  onHomeClick,
+  onEntryClick
 }) => {
-  const [zoomLevel, setZoomLevel] = useState(initialZoomRadiusKm);
+  const mapRef = useRef<any>(null);
 
-  // Convert geographic coordinates to screen coordinates
-  const geoToScreen = (lat: number, lng: number, centerLat: number, centerLng: number): { x: number; y: number } => {
-    // Simple equirectangular projection for this demo
-    // 1 degree latitude ≈ 111 km, 1 degree longitude varies by latitude
-    const kmPerDegreeLat = 111;
-    const kmPerDegreeLng = 111 * Math.cos(centerLat * Math.PI / 180);
+  useEffect(() => {
+    // Dynamically load Leaflet CSS if not already loaded
+    if (!document.querySelector('link[href*="leaflet"]')) {
+      const link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
+      link.integrity = 'sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=';
+      link.crossOrigin = '';
+      document.head.appendChild(link);
+    }
 
-    const latDiff = (lat - centerLat) * kmPerDegreeLat;
-    const lngDiff = (lng - centerLng) * kmPerDegreeLng;
+    // Dynamically load Leaflet JS
+    const loadLeaflet = async () => {
+      if (typeof window !== 'undefined' && !(window as any).L) {
+        // Load Leaflet from CDN
+        const script = document.createElement('script');
+        script.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
+        script.integrity = 'sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=';
+        script.crossOrigin = '';
+        document.head.appendChild(script);
 
-    // Scale by zoom level (pixels per km)
-    const scale = KM_TO_PX * (25 / zoomLevel); // Base scale for 25km zoom
-    return {
-      x: latDiff * scale,
-      y: -lngDiff * scale // Negative because screen Y increases downward
+        script.onload = () => {
+          initializeMap();
+        };
+      } else {
+        initializeMap();
+      }
     };
-  };
 
-  const handleZoomIn = () => {
-    setZoomLevel(prev => Math.min(prev * 1.5, MAX_ZOOM));
-  };
+    const initializeMap = () => {
+      if (typeof window !== 'undefined' && (window as any).L) {
+        const L = (window as any).L;
 
-  const handleZoomOut = () => {
-    setZoomLevel(prev => Math.max(prev / 1.5, MIN_ZOOM));
-  };
+        const mapElement = document.getElementById('leaflet-map');
+        if (mapElement) {
+          // Remove existing map if it exists
+          if (mapRef.current) {
+            mapRef.current.remove();
+            mapRef.current = null;
+          }
 
-  const handleReset = () => {
-    setZoomLevel(initialZoomRadiusKm);
-  };
+          // Clear existing map content
+          while (mapElement.firstChild) {
+            mapElement.removeChild(mapElement.firstChild);
+          }
+
+          // Ensure element has dimensions before creating map
+          if (mapElement.offsetWidth > 0 && mapElement.offsetHeight > 0) {
+            const map = L.map('leaflet-map').setView([center.lat, center.lng], 13);
+            mapRef.current = map;
+
+            // Use Agregore's P2P tile loading if available, otherwise fallback to standard tiles
+            const tileUrl = typeof window !== 'undefined' && (window as any).agregore?.p2p?.getTileUrl
+              ? (window as any).agregore.p2p.getTileUrl('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png')
+              : 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+
+            L.tileLayer(tileUrl, {
+              attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+              maxZoom: 18,
+              // Enable caching for offline use in Agregore
+              useCache: typeof window !== 'undefined' && (window as any).agregore !== undefined
+            }).addTo(map);
+
+            // Add entry markers
+            entries.forEach((entry) => {
+              const markerColor = entry.type === 'has' ? '#28a745' : '#dc3545'; // Green for has, red for need
+              const markerIcon = L.divIcon({
+                className: 'custom-entry-marker',
+                html: `<div style="
+                  width: 20px;
+                  height: 20px;
+                  background-color: ${markerColor};
+                  border: 3px solid white;
+                  border-radius: 50%;
+                  box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  font-size: 10px;
+                  color: white;
+                  font-weight: bold;
+                ">${entry.type === 'has' ? 'H' : 'N'}</div>`,
+                iconSize: [20, 20],
+                iconAnchor: [10, 10]
+              });
+
+              const marker = L.marker([entry.coordinates.lat, entry.coordinates.lng], { icon: markerIcon })
+                .addTo(map)
+                .bindPopup(`
+                  <div style="font-family: sans-serif;">
+                    <h4 style="margin: 0 0 8px 0; color: ${markerColor};">${entry.type === 'has' ? '🟢 HAS' : '🔴 NEEDS'}</h4>
+                    <p style="margin: 4px 0;"><strong>Type:</strong> ${entry.resourceType}</p>
+                    <p style="margin: 4px 0;"><strong>Description:</strong> ${entry.description}</p>
+                    <p style="margin: 4px 0; font-size: 12px; color: #666;">
+                      Click to view details
+                    </p>
+                  </div>
+                `);
+
+              marker.on('click', () => {
+                onEntryClick?.(entry);
+              });
+            });
+
+            // Add home button if homeLocation and onHomeClick are provided
+            if (homeLocation && onHomeClick) {
+              // Create custom home button control
+              const HomeControl = L.Control.extend({
+                options: {
+                  position: 'topleft'
+                },
+
+                onAdd: function(map: any) {
+                  const container = L.DomUtil.create('div', 'leaflet-control-home');
+                  container.style.backgroundColor = '#2e90fa';
+                  container.style.color = 'white';
+                  container.style.border = '2px solid rgba(255,255,255,0.2)';
+                  container.style.backgroundClip = 'padding-box';
+                  container.style.width = '30px';
+                  container.style.height = '30px';
+                  container.style.borderRadius = '4px';
+                  container.style.cursor = 'pointer';
+                  container.style.display = 'flex';
+                  container.style.alignItems = 'center';
+                  container.style.justifyContent = 'center';
+                  container.style.fontSize = '14px';
+                  container.style.fontWeight = 'bold';
+                  container.style.boxShadow = '0 1px 3px rgba(0,0,0,0.2)';
+                  container.style.marginTop = '10px';
+                  container.style.marginLeft = '10px';
+                  container.innerHTML = '🏠';
+
+                  container.onclick = function() {
+                    onHomeClick();
+                  };
+
+                  // Add hover effect
+                  container.onmouseover = function() {
+                    container.style.backgroundColor = '#1e7ae6';
+                  };
+                  container.onmouseout = function() {
+                    container.style.backgroundColor = '#2e90fa';
+                  };
+
+                  return container;
+                }
+              });
+
+              map.addControl(new HomeControl());
+            }
+          } else {
+            // Retry after a short delay if element doesn't have dimensions yet
+            setTimeout(initializeMap, 100);
+          }
+        }
+      }
+    };
+
+    loadLeaflet();
+
+    // Cleanup function
+    return () => {
+      if (mapRef.current) {
+        mapRef.current.remove();
+        mapRef.current = null;
+      }
+    };
+  }, [center, homeLocation, onHomeClick, entries, onEntryClick]);
 
   return (
-    <div style={{ position: 'relative', width: '100%', height: '500px' }}>
-      {/* Zoom Controls */}
-      <div style={{
-        position: 'absolute',
-        top: 10,
-        right: 10,
-        zIndex: 100,
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '4px'
-      }}>
-        <button
-          onClick={handleZoomIn}
-          style={{
-            width: '32px',
-            height: '32px',
-            border: 'none',
-            borderRadius: '4px',
-            background: '#2e90fa',
-            color: 'white',
-            cursor: 'pointer',
-            fontSize: '16px'
-          }}
-          title="Zoom In"
-        >
-          +
-        </button>
-        <button
-          onClick={handleZoomOut}
-          style={{
-            width: '32px',
-            height: '32px',
-            border: 'none',
-            borderRadius: '4px',
-            background: '#2e90fa',
-            color: 'white',
-            cursor: 'pointer',
-            fontSize: '16px'
-          }}
-          title="Zoom Out"
-        >
-          −
-        </button>
-        <button
-          onClick={handleReset}
-          style={{
-            width: '32px',
-            height: '32px',
-            border: 'none',
-            borderRadius: '4px',
-            background: '#666',
-            color: 'white',
-            cursor: 'pointer',
-            fontSize: '12px'
-          }}
-          title="Reset View"
-        >
-          ↺
-        </button>
-        <div style={{
-          background: 'rgba(0,0,0,0.7)',
-          color: 'white',
-          padding: '4px 8px',
-          borderRadius: '4px',
-          fontSize: '12px',
-          textAlign: 'center'
-        }}>
-          {Math.round(zoomLevel)}km
-        </div>
-      </div>
-
-      {/* Globe Container */}
-      <div style={{
-        width: '100%',
-        height: '100%',
-        background: '#f0f7fa',
-        position: 'relative',
-        overflow: 'hidden'
-      }}>
-        {/* Grid background for reference */}
-        <div style={{
-          position: 'absolute',
+    <div style={{ position: 'relative', width: '100%', height: '100%' }}>
+      <div
+        id="leaflet-map"
+        style={{
           width: '100%',
           height: '100%',
-          backgroundImage: `
-            linear-gradient(90deg, #ddd 1px, transparent 1px),
-            linear-gradient(0deg, #ddd 1px, transparent 1px)
-          `,
-          backgroundSize: `${50}px ${50}px`,
-          opacity: 0.3
+          background: '#f0f8ff',
+          borderRadius: '8px',
+          position: 'relative'
+        }}
+      />
+      <div style={{
+        position: 'absolute',
+        top: '10px',
+        right: '10px',
+        zIndex: 1000,
+        background: 'rgba(255,255,255,0.9)',
+        padding: '8px',
+        borderRadius: '4px',
+        fontSize: '12px'
+      }}>
+        Leaflet Map Loading...
+      </div>
+
+      {/* Crosshair at center */}
+      <div style={{
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        zIndex: 999,
+        pointerEvents: 'none',
+        width: '20px',
+        height: '20px'
+      }}>
+        {/* Horizontal line */}
+        <div style={{
+          position: 'absolute',
+          top: '50%',
+          left: 0,
+          right: 0,
+          height: '1px',
+          backgroundColor: '#ff4444',
+          transform: 'translateY(-50%)'
         }} />
-
-        {/* Center point (user location) */}
+        {/* Vertical line */}
         <div style={{
           position: 'absolute',
           left: '50%',
-          top: '50%',
-          width: 12,
-          height: 12,
-          background: '#3cb371',
-          borderRadius: '50%',
-          border: '2px solid #fff',
-          boxShadow: '0 2px 4px rgba(0,0,0,0.2)',
-          zIndex: 10,
-          transform: 'translate(-50%, -50%)'
-        }} title="You (center)" />
-
-        {/* Has/Need entries */}
-        {entries.map((entry) => {
-          const screenPos = geoToScreen(entry.coordinates.lat, entry.coordinates.lng, center.lat, center.lng);
-          console.log(`Entry ${entry.id}:`, entry.coordinates, '->', screenPos); // Debug log
-          return (
-            <div
-              key={entry.id}
-              style={{
-                position: 'absolute',
-                left: `calc(50% + ${screenPos.x}px)`,
-                top: `calc(50% + ${screenPos.y}px)`,
-                width: Math.max(8, 16 / Math.sqrt(zoomLevel / 25)),
-                height: Math.max(8, 16 / Math.sqrt(zoomLevel / 25)),
-                background: entry.type === 'has' ? '#2e90fa' : '#e74c3c',
-                borderRadius: '50%',
-                border: '2px solid #fff',
-                cursor: 'pointer',
-                opacity: 0.85,
-                boxShadow: '0 2px 4px rgba(0,0,0,0.2)',
-                transform: 'translate(-50%, -50%)',
-                transition: 'all 0.2s ease'
-              }}
-              title={`${entry.type.toUpperCase()}: ${entry.description}`}
-              onClick={() => onEntryClick?.(entry)}
-            />
-          );
-        })}
-
-        {/* Peers */}
-        {peers.map((peer) => {
-          const screenPos = geoToScreen(peer.location.lat, peer.location.lng, center.lat, center.lng);
-          return (
-            <div
-              key={peer.peerId}
-              style={{
-                position: 'absolute',
-                left: `calc(50% + ${screenPos.x}px)`,
-                top: `calc(50% + ${screenPos.y}px)`,
-                width: Math.max(10, 20 / Math.sqrt(zoomLevel / 25)),
-                height: Math.max(10, 20 / Math.sqrt(zoomLevel / 25)),
-                background: '#9b59b6',
-                borderRadius: '50%',
-                border: '2px solid #fff',
-                cursor: 'pointer',
-                opacity: 0.7,
-                boxShadow: '0 2px 4px rgba(0,0,0,0.2)',
-                transform: 'translate(-50%, -50%)',
-                transition: 'all 0.2s ease'
-              }}
-              title={`Peer: ${peer.peerId} (${Math.round(peer.location.lat * 1000) / 1000}°, ${Math.round(peer.location.lng * 1000) / 1000}°)`}
-              onClick={() => onPeerClick?.(peer)}
-            />
-          );
-        })}
-
-        {/* Zoom radius indicator */}
+          top: 0,
+          bottom: 0,
+          width: '1px',
+          backgroundColor: '#ff4444',
+          transform: 'translateX(-50%)'
+        }} />
+        {/* Center dot */}
         <div style={{
           position: 'absolute',
-          left: '50%',
           top: '50%',
-          width: (zoomLevel * KM_TO_PX * 2),
-          height: (zoomLevel * KM_TO_PX * 2),
-          border: '2px dashed #666',
+          left: '50%',
+          width: '6px',
+          height: '6px',
+          backgroundColor: '#ff4444',
           borderRadius: '50%',
-          pointerEvents: 'none',
-          opacity: 0.3,
-          transform: 'translate(-50%, -50%)'
-        }} title={`${zoomLevel}km radius`} />
+          transform: 'translate(-50%, -50%)',
+          border: '1px solid white',
+          boxShadow: '0 0 2px rgba(0,0,0,0.3)'
+        }} />
       </div>
     </div>
   );

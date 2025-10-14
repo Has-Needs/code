@@ -12,6 +12,8 @@ export interface Coordinates {
   }
   
   export type EntryType = 'has' | 'need';
+
+export type ContractType = 'sale' | 'service-exchange' | 'barter';
   
   export interface Entry {
     id: string;
@@ -35,31 +37,66 @@ export interface Coordinates {
     completed: boolean;
   }
   
+  export type ContractState = 'created' | 'working' | 'executed' | 'abandoned';
+
+export interface SmartContract {
+  id: string;
+  type: ContractType;
+  needEntryId: string;
+  hasEntryId?: string;        // Set when matched
+  state: ContractState;
+  createdAt: number;
+  startedAt?: number;         // When enters working state
+  completedAt?: number;       // When executed
+  abandonedAt?: number;       // If abandoned (no completedAt)
+  exchangeDetails: string;
+  location: Coordinates;
+  creatorDID: string;
+  participantDID?: string;    // The other party
+  communications?: Communication[];
+  metadata?: Record<string, any>;
+}
+
+export interface Communication {
+  id: string;
+  fromDID: string;
+  toDID: string;
+  content: string;
+  timestamp: number;
+  type: 'text' | 'image' | 'voice' | 'location' | 'verification';
+}
+
   export interface Peer {
     peerId: string;
     location: Coordinates;
-    trustLevel: number;     // 0-1 (computed, not static)
-    trustHops: number;      // Hops from local user in trust graph
     lastActive: number;
   }
-  
-  export interface SmartContract {
-    contractId: string;
-    feedEntryId: string;      // Entry or feed being purchased/shared
-    ownerDID: string;
-    buyerId: string;          // County or org DID
-    terms: string;            // Text template or pointer to terms
-    signature: string;
-    active: boolean;
-    started: number;
-    ended?: number;
+
+  export interface Message {
+    id: string;
+    sender: string;
+    content: string;
+    timestamp: number;
+    type: 'text' | 'has' | 'need';
+    entryId?: string;
   }
-  
-  /**
-   * Useful for UI: color code mapping for trust visualization
-   */
-  export interface TrustOverlayColor {
-    color: string;   // '#FF0000', 'green', etc.
-    label: string;   // trusted, friend, stranger, etc.
+
+  export interface Community {
+    id: string;
+    name: string;
+    description?: string;
+    messages: Message[];
+    createdBy: string;
+    createdAt: number;
+    members: string[];
+    isActive: boolean;
+    memberCount: number;
   }
-  
+
+  export interface Persona {
+    id: string;
+    name: string;
+    communities: Community[];
+    hasEntries: Entry[];
+    needEntries: Entry[];
+  }

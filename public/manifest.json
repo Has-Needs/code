@@ -1,0 +1,64 @@
+{
+  "name": "Has-Needs",
+  "short_name": "HasNeeds",
+  "description": "Peer-to-peer resource sharing platform",
+  "version": "1.0.0",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "theme_color": "#2e90fa",
+  "background_color": "#525A3A",
+  "categories": ["productivity", "social", "utilities"],
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "16x16 32x32",
+      "type": "image/x-icon",
+      "purpose": "any"
+    }
+  ],
+  "protocol_handlers": [
+    {
+      "protocol": "ssb",
+      "url": "/?feed=%s"
+    },
+    {
+      "protocol": "ipfs",
+      "url": "/?cid=%s"
+    },
+    {
+      "protocol": "ipns",
+      "url": "/?name=%s"
+    },
+    {
+      "protocol": "magnet",
+      "url": "/?magnet=%s"
+    },
+    {
+      "protocol": "hasneeds",
+      "url": "/?invitation=%s"
+    }
+  ],
+  "share_target": {
+    "action": "/share",
+    "method": "POST",
+    "enctype": "multipart/form-data",
+    "params": {
+      "title": "Share to Has-Needs",
+      "text": "Share resource or need"
+    }
+  },
+  "permissions": ["geolocation", "notifications"],
+  "agregore": {
+    "protocols": ["ssb", "ipfs", "ipns", "magnet", "hasneeds"],
+    "p2p": {
+      "enabled": true,
+      "autoShare": true
+    },
+    "cache": {
+      "enabled": true,
+      "maxSize": "1GB"
+    }
+  }
+}
