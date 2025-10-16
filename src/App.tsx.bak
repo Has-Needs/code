@@ -302,13 +302,9 @@ export const App: React.FC = () => {
   // Community state
   const [currentCommunity, setCurrentCommunity] = useState<Community | null>(null);
 
-  // Persona modal state (no longer used)
-  // const [showPersonaModal, setShowPersonaModal] = useState(false);
-  // const [selectedPersona, setSelectedPersona] = useState<Persona | null>(null);
-
-  // Communities modal state
-  const [showCommunitiesModal, setShowCommunitiesModal] = useState(false);
-  const [activePersona, setActivePersona] = useState<Persona | null>(null);
+  // Persona modal state
+  const [showPersonaModal, setShowPersonaModal] = useState(false);
+  const [selectedPersona, setSelectedPersona] = useState<Persona | null>(null);
 
   // Community invitation state
   const [showPersonaSelection, setShowPersonaSelection] = useState(false);
@@ -474,17 +470,13 @@ export const App: React.FC = () => {
   }
 
   function handlePersonaSelect(persona: Persona) {
-    // If clicking the same persona, clear the filter
-    if (activePersona?.id === persona.id) {
-      setActivePersona(null);
-    } else {
-      setActivePersona(persona);
-    }
+    setActivePersona(persona);
+    // Don't open modal anymore - just set active persona
   }
 
   function handlePersonaUpdate(updatedPersona: Persona) {
     setPersonas(prev => prev.map(p => p.id === updatedPersona.id ? updatedPersona : p));
-    // Removed selectedPersona state management
+    setSelectedPersona(updatedPersona);
   }
 
   // Dropdown menu state
@@ -495,6 +487,12 @@ export const App: React.FC = () => {
 
   // Archive state - track which personas are "deleted" (hidden from view but recoverable)
   const [archivedPersonas, setArchivedPersonas] = useState<Set<string>>(new Set());
+
+  // Active persona state (for showing Communities button and Has/Needs)
+  const [activePersona, setActivePersona] = useState<Persona | null>(null);
+
+  // Communities modal state
+  const [showCommunitiesModal, setShowCommunitiesModal] = useState(false);
 
   // Archive view state
   const [showArchiveView, setShowArchiveView] = useState(false);
@@ -561,7 +559,10 @@ export const App: React.FC = () => {
     }
 
     // If the deleted/archived persona was selected, clear selection and close modal
-    // Removed modal state management - personas now filter entries directly
+    if (selectedPersona?.id === personaId) {
+      setSelectedPersona(null);
+      setShowPersonaModal(false);
+    }
 
     // Adjust scroll position if needed
     const visiblePersonas = getVisiblePersonas();
@@ -621,7 +622,13 @@ export const App: React.FC = () => {
     }
 
     // Set selected persona first, then show modal
-    // Removed modal state management - personas now filter entries directly
+    setSelectedPersona(newPersona);
+
+    // Use setTimeout to ensure state updates are processed
+    setTimeout(() => {
+      setShowPersonaModal(true);
+      console.log('Modal should now be visible');
+    }, 10);
 
     console.log('New persona added:', newPersona);
   }
@@ -715,9 +722,9 @@ export const App: React.FC = () => {
               justifyContent: 'center'
             }}>
               {isAgregore ? (
-                p2pStatus === 'p2p' ? 'P2P' : p2pStatus === 'offline' ? 'OFF' : 'ON'
+                p2pStatus === 'p2p' ? '⚡' : p2pStatus === 'offline' ? 'OFF' : '🌐'
               ) : (
-                p2pStatus === 'offline' ? 'OFF' : 'ON'
+                p2pStatus === 'offline' ? 'OFF' : '🌐'
               )}
             </div>
 
@@ -747,101 +754,89 @@ export const App: React.FC = () => {
 
           {/* Persona Tabs - directly after left arrow */}
           {getVisiblePersonas().slice(personaScrollIndex, personaScrollIndex + 5).map((persona, index) => (
-            <div key={persona.id} style={{ position: 'relative' }}>
-              <button
-                onClick={() => handlePersonaSelect(persona)}
-                style={{
-                  height: '40px',
-                  border: activePersona?.id === persona.id ? '2px solid #2e90fa' : '1px solid #ddd',
-                  borderRadius: '8px',
-                  background: activePersona?.id === persona.id ? '#e3f2fd' : '#fff',
-                  color: activePersona?.id === persona.id ? '#1976d2' : '#333',
-                  cursor: 'pointer',
-                  fontSize: '12px',
-                  fontWeight: activePersona?.id === persona.id ? '600' : '500',
-                  padding: '0 8px',
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis',
-                  whiteSpace: 'nowrap',
-                  minWidth: '70px',
-                  boxShadow: activePersona?.id === persona.id ? '0 2px 8px rgba(46, 144, 250, 0.3)' : '0 2px 4px rgba(0,0,0,0.1)',
-                  transition: 'all 0.2s ease',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  margin: '0 1px',
-                  flex: 1
-                }}
-                aria-label={`View ${persona.name} entries${activePersona?.id === persona.id ? ' (active)' : ''}`}
-                onMouseEnter={(e) => {
-                  if (activePersona?.id !== persona.id) {
-                    e.currentTarget.style.background = '#f8f9fa';
-                    e.currentTarget.style.borderColor = '#2e90fa';
-                    e.currentTarget.style.boxShadow = '0 4px 8px rgba(0,0,0,0.15)';
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  if (activePersona?.id !== persona.id) {
-                    e.currentTarget.style.background = '#fff';
-                    e.currentTarget.style.borderColor = '#ddd';
-                    e.currentTarget.style.boxShadow = '0 2px 4px rgba(0,0,0,0.1)';
-                  }
-                }}
-              >
-                {persona.name}
-              </button>
-
-              {/* Communities Button - shows beneath the active persona */}
-              {activePersona?.id === persona.id && (
-                <div style={{
-                  position: 'absolute',
-                  top: '100%',
-                  left: '50%',
-                  transform: 'translateX(-50%)',
-                  marginTop: '4px',
-                  zIndex: 1001
-                }}>
-                  <button
-                    onClick={() => setShowCommunitiesModal(true)}
-                    style={{
-                      background: 'linear-gradient(135deg, #17a2b8, #138496)',
-                      color: 'white',
-                      border: 'none',
-                      borderRadius: '6px',
-                      padding: '6px 12px',
-                      fontSize: '12px',
-                      cursor: 'pointer',
-                      fontWeight: '500',
-                      boxShadow: '0 2px 4px rgba(23, 162, 184, 0.3)',
-                      transition: 'all 0.2s ease',
-                      whiteSpace: 'nowrap'
-                    }}
-                    title={`Manage communities for ${persona.name}`}
-                    aria-label={`Manage communities for ${persona.name}`}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.background = 'linear-gradient(135deg, #138496, #117a8b)';
-                      e.currentTarget.style.transform = 'translateY(-1px)';
-                      e.currentTarget.style.boxShadow = '0 4px 8px rgba(23, 162, 184, 0.4)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.background = 'linear-gradient(135deg, #17a2b8, #138496)';
-                      e.currentTarget.style.transform = 'translateY(0)';
-                      e.currentTarget.style.boxShadow = '0 2px 4px rgba(23, 162, 184, 0.3)';
-                    }}
-                  >
-                    🏘️ Communities ({persona.communities.length})
-                  </button>
-                </div>
-              )}
-            </div>
+            <button
+              key={persona.id}
+              onClick={() => handlePersonaSelect(persona)}
+              style={{
+                height: '40px',
+                border: activePersona?.id === persona.id ? '2px solid #2e90fa' : '1px solid #ddd',
+                borderRadius: '8px',
+                background: activePersona?.id === persona.id ? '#e3f2fd' : '#fff',
+                color: activePersona?.id === persona.id ? '#1976d2' : '#333',
+                cursor: 'pointer',
+                fontSize: '12px',
+                fontWeight: activePersona?.id === persona.id ? '600' : '500',
+                padding: '0 8px',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap',
+                minWidth: '70px',
+                boxShadow: activePersona?.id === persona.id ? '0 2px 8px rgba(46, 144, 250, 0.3)' : '0 2px 4px rgba(0,0,0,0.1)',
+                transition: 'all 0.2s ease',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                margin: '0 1px',
+                flex: 1
+              }}
+              title={`View ${persona.name} details`}
+              aria-label={`View ${persona.name} details`}
+              onMouseEnter={(e) => {
+                if (activePersona?.id !== persona.id) {
+                  e.currentTarget.style.background = '#f8f9fa';
+                  e.currentTarget.style.borderColor = '#2e90fa';
+                  e.currentTarget.style.boxShadow = '0 4px 8px rgba(0,0,0,0.15)';
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (activePersona?.id !== persona.id) {
+                  e.currentTarget.style.background = '#fff';
+                  e.currentTarget.style.borderColor = '#ddd';
+                  e.currentTarget.style.boxShadow = '0 2px 4px rgba(0,0,0,0.1)';
+                }
+              }}
+            >
+              {persona.name}
+            </button>
           ))}
 
-          {/* Right Section: Right Arrow + Unified Action Button */}
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '6px'
-          }}>
+          {/* Communities Button - shows when persona is selected */}
+          {activePersona && (
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              marginTop: '8px'
+            }}>
+              <button
+                onClick={() => setShowCommunitiesModal(true)}
+                style={{
+                  background: 'linear-gradient(135deg, #17a2b8, #138496)',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '6px',
+                  padding: '6px 12px',
+                  fontSize: '12px',
+                  cursor: 'pointer',
+                  fontWeight: '500',
+                  boxShadow: '0 2px 4px rgba(23, 162, 184, 0.3)',
+                  transition: 'all 0.2s ease'
+                }}
+                title={`Manage communities for ${activePersona.name}`}
+                aria-label={`Manage communities for ${activePersona.name}`}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = 'linear-gradient(135deg, #138496, #117a8b)';
+                  e.currentTarget.style.transform = 'translateY(-1px)';
+                  e.currentTarget.style.boxShadow = '0 4px 8px rgba(23, 162, 184, 0.4)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = 'linear-gradient(135deg, #17a2b8, #138496)';
+                  e.currentTarget.style.transform = 'translateY(0)';
+                  e.currentTarget.style.boxShadow = '0 2px 4px rgba(23, 162, 184, 0.3)';
+                }}
+              >
+                🏘️ Communities ({activePersona.communities.length})
+              </button>
             {/* Right Arrow */}
             <button
               onClick={handleNextPersonas}
@@ -906,8 +901,6 @@ export const App: React.FC = () => {
               </button>
             </div>
           </div>
-        </div>
-
         {/* Dropdown Menu - positioned outside toolbar container */}
         {showDropdown && (
           <div className="dropdown-container" style={{
@@ -1046,424 +1039,239 @@ export const App: React.FC = () => {
           </div>
         )}
       </div>
+    </div>
+  );  </div>
+  );    </div>
 
       {/* Communities Modal */}
-      {showCommunitiesModal && activePersona && (
+        {showCommunitiesModal && activePersona && (
         <div style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          background: 'rgba(0,0,0,0.5)',
-          zIndex: 2000,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          padding: '20px'
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        background: 'rgba(0,0,0,0.5)',
+        zIndex: 1001,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: '20px'
         }}>
-          <div style={{
-            background: '#fff',
-            borderRadius: '12px',
-            width: '90vw',
-            height: '80vh',
-            maxWidth: '1000px',
-            minWidth: '600px',
-            minHeight: '500px',
-            display: 'flex',
-            flexDirection: 'column',
-            boxShadow: '0 8px 32px rgba(0,0,0,0.3)',
-            overflow: 'hidden'
-          }}>
-            {/* Communities Modal Content */}
-            <div style={{
-              padding: '20px',
-              borderBottom: '1px solid #eee',
-              background: 'linear-gradient(135deg, #17a2b8, #138496)'
-            }}>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                <h3 style={{
-                  margin: 0,
-                  color: 'white',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '12px'
-                }}>
-                  🏘️ Communities for {activePersona?.name}
-                </h3>
-                <button onClick={() => setShowCommunitiesModal(false)}>
-                  ✕ Close
-                </button>
-              </div>
-            </div>
-            <div style={{ flex: 1, padding: '20px', overflow: 'auto' }}>
-              {/* Community Management Buttons */}
-              <div style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-                gap: '12px',
-                marginBottom: '24px'
-              }}>
-                <button style={{/* Create Community button styles */}}>
-                  ➕ Create Community
-                </button>
-                <button style={{/* QR Invite button styles */}}>
-                  📱 Show QR Invite
-                </button>
-                <button style={{/* Subcommunity button styles */}}>
-                  🔗 Create Subcommunity
-                </button>
-                <button style={{/* Archive button styles */}}>
-                  📦 Archive Community
-                </button>
-              </div>
-            </div>
-          </div>
+        <div style={{
+        background: '#fff',
+        borderRadius: '12px',
+        width: '90vw',
+        height: '80vh',
+        maxWidth: '1000px',
+        minWidth: '600px',
+        minHeight: '500px',
+        display: 'flex',
+        flexDirection: 'column',
+        boxShadow: '0 8px 32px rgba(0,0,0,0.3)',
+        overflow: 'hidden'
+        }}>
+        {/* Communities Header */}
+        <div style={{
+        padding: '20px',
+        borderBottom: '1px solid #eee',
+        background: 'linear-gradient(135deg, #17a2b8, #138496)'
+        }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <h3 style={{
+        margin: 0,
+        color: 'white',
+        display: 'flex',
+        alignItems: 'center',
+        gap: '12px'
+        }}>
+        <span style={{
+        width: '32px',
+        height: '32px',
+        background: 'rgba(255,255,255,0.2)',
+        borderRadius: '50%',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        fontSize: '16px'
+        }}>
+        🏘️
+        </span>
+        Communities for {activePersona?.name}
+        </h3>
+        <button
+        onClick={() => {
+        setShowCommunitiesModal(false);
+        }}
+        style={{
+        background: 'rgba(255,255,255,0.2)',
+        color: 'white',
+        border: 'none',
+        borderRadius: '6px',
+        padding: '8px 16px',
+        cursor: 'pointer',
+        fontSize: '14px'
+        }}
+        >
+        ✕ Close
+        </button>
         </div>
-      )}
+        </div>
 
-      {/* Map Container */}
-      <div style={{
-        position: 'relative',
-        width: '100%',
-        height: `calc(100vh - ${viewportSize.margin * 2}px - 80px)`,
-        background: '#f0f8ff',
+        {/* Communities Content */}
+        <div style={{ flex: 1, padding: '20px', overflow: 'auto' }}>
+        {/* Community Management Buttons */}
+        <div style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+        gap: '12px',
+        marginBottom: '24px'
+        }}>
+        <button
+        style={{
+        background: 'linear-gradient(135deg, #28a745, #20c997)',
+        color: 'white',
+        border: 'none',
+        borderRadius: '8px',
+        padding: '12px 16px',
+        fontSize: '14px',
+        fontWeight: '500',
+        cursor: 'pointer',
+        boxShadow: '0 2px 4px rgba(40, 167, 69, 0.3)',
+        transition: 'all 0.2s ease'
+        }}
+        onMouseEnter={(e) => {
+        e.currentTarget.style.background = 'linear-gradient(135deg, #218838, #17a2b8)';
+        e.currentTarget.style.transform = 'translateY(-1px)';
+        }}
+        onMouseLeave={(e) => {
+        e.currentTarget.style.background = 'linear-gradient(135deg, #28a745, #20c997)';
+        e.currentTarget.style.transform = 'translateY(0)';
+        }}
+        >
+        ➕ Create Community
+        </button>
+
+        <button
+        style={{
+        background: 'linear-gradient(135deg, #007bff, #0056b3)',
+        color: 'white',
+        border: 'none',
+        borderRadius: '8px',
+        padding: '12px 16px',
+        fontSize: '14px',
+        fontWeight: '500',
+        cursor: 'pointer',
+        boxShadow: '0 2px 4px rgba(0, 123, 255, 0.3)',
+        transition: 'all 0.2s ease'
+        }}
+        onMouseEnter={(e) => {
+        e.currentTarget.style.background = 'linear-gradient(135deg, #0056b3, #004085)';
+        e.currentTarget.style.transform = 'translateY(-1px)';
+        }}
+        onMouseLeave={(e) => {
+        e.currentTarget.style.background = 'linear-gradient(135deg, #007bff, #0056b3)';
+        e.currentTarget.style.transform = 'translateY(0)';
+        }}
+        >
+        📱 Show QR Invite
+        </button>
+
+        <button
+        style={{
+        background: 'linear-gradient(135deg, #ffc107, #e0a800)',
+        color: 'white',
+        border: 'none',
+        borderRadius: '8px',
+        padding: '12px 16px',
+        fontSize: '14px',
+        fontWeight: '500',
+        cursor: 'pointer',
+        boxShadow: '0 2px 4px rgba(255, 193, 7, 0.3)',
+        transition: 'all 0.2s ease'
+        }}
+        onMouseEnter={(e) => {
+        e.currentTarget.style.background = 'linear-gradient(135deg, #e0a800, #d39e00)';
+        e.currentTarget.style.transform = 'translateY(-1px)';
+        }}
+        onMouseLeave={(e) => {
+        e.currentTarget.style.background = 'linear-gradient(135deg, #ffc107, #e0a800)';
+        e.currentTarget.style.transform = 'translateY(0)';
+        }}
+        >
+        🔗 Create Subcommunity
+        </button>
+
+        <button
+        style={{
+        background: 'linear-gradient(135deg, #dc3545, #c82333)',
+        color: 'white',
+        border: 'none',
+        borderRadius: '8px',
+        padding: '12px 16px',
+        fontSize: '14px',
+        fontWeight: '500',
+        cursor: 'pointer',
+        boxShadow: '0 2px 4px rgba(220, 53, 69, 0.3)',
+        transition: 'all 0.2s ease'
+        }}
+        onMouseEnter={(e) => {
+        e.currentTarget.style.background = 'linear-gradient(135deg, #c82333, #bd2130)';
+        e.currentTarget.style.transform = 'translateY(-1px)';
+        }}
+        onMouseLeave={(e) => {
+        e.currentTarget.style.background = 'linear-gradient(135deg, #dc3545, #c82333)';
+        e.currentTarget.style.transform = 'translateY(0)';
+        }}
+        >
+        📦 Archive Community
+        </button>
+        </div>
+
+        {/* Communities List */}
+        <div style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))',
+        gap: '16px'
+        }}>
+        {activePersona?.communities.length === 0 ? (
+        <div style={{
+        gridColumn: '1 / -1',
+        textAlign: 'center',
+        color: '#666',
+        padding: '40px',
+        background: '#f8f9fa',
         borderRadius: '8px'
-      }}>
-        {/* Bootstrap Handler - Processes community invitations and app installation */}
-        <BootstrapHandler
-          onCommunityInvitation={(invitationData) => {
-            console.log('🏘️ Community invitation:', invitationData);
-            setPendingInvitation(invitationData);
-            setShowPersonaSelection(true);
-          }}
-          onAppInstallPrompt={() => {
-            console.log('📱 Prompting app installation...');
-            // TODO: Show app installation modal
-          }}
-          hasAppInstalled={true} // TODO: Detect if app is installed
-        />
-
-        {/* Community Interface - Shows current community with invitation sharing */}
-        <CommunityInterface
-          currentCommunity={currentCommunity}
-          currentUserId={userDID}
-          currentUserName="Current User" // TODO: Get from current persona
-          onLeaveCommunity={() => setCurrentCommunity(null)}
-        />
-
-        {/* Globe Map Component */}
-        <Globe
-          center={center}
-          entries={entries.filter(entry => {
-            // If no active persona, show all user's entries
-            if (!activePersona) return entry.userDID === userDID;
-            // If active persona, show only entries from that persona
-            return entry.userDID === userDID && (
-              activePersona.hasEntries.some(he => he.id === entry.id) ||
-              activePersona.needEntries.some(ne => ne.id === entry.id)
-            );
-          })}
-          peers={peers}
-          initialZoomRadiusKm={25}
-          onEntryClick={handleEntryClick}
-          height={viewportSize.height}
-          homeLocation={homeLocation}
-          onHomeClick={() => setCenter(homeLocation)}
-        />
-
-        <div style={{ position: 'absolute', bottom: '24px', right: '24px', zIndex: 1000 }}>
-          <NeedButton
-            userDID={userDID}
-            coordinates={center}
-            onAdd={addEntry}
-            onContractCreate={handleContractCreate}
-          />
+        }}>
+        <p>No communities yet.</p>
+        <p>Create your first community using the buttons above!</p>
         </div>
-        <div style={{ position: 'absolute', bottom: '24px', left: '24px', zIndex: 1000 }}>
-          <HasButton
-            userDID={userDID}
-            coordinates={center}
-            onAdd={addEntry}
-          />
+        ) : (
+        activePersona?.communities?.map((community) => (
+        <div
+        key={community.id}
+        style={{
+        padding: '16px',
+        border: '1px solid #ddd',
+        borderRadius: '8px',
+        background: '#f8f9fa'
+        }}
+        >
+        <h4 style={{ margin: '0 0 8px 0', color: '#495057' }}>
+        {community.name}
+        </h4>
+        <p style={{ margin: '0 0 12px 0', fontSize: '14px', color: '#666' }}>
+        {community.description}
+        </p>
+        <div style={{ fontSize: '12px', color: '#999' }}>
+        <div>Members: {community.memberCount}</div>
+        <div>Messages: {community.messages.length}</div>
         </div>
-
-        {/* Persona Modal - contained within map view */}
-        {/* Modal removed - personas now filter entries directly */}
-
-        {/* Archive View Modal */}
-        {showArchiveView && (
-          <div style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            background: 'rgba(0,0,0,0.5)',
-            zIndex: 1001,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            padding: '20px'
-          }}>
-            <div style={{
-              background: '#fff',
-              borderRadius: '12px',
-              width: '80vw',
-              height: '70vh',
-              maxWidth: '1000px',
-              minWidth: '500px',
-              minHeight: '300px',
-              display: 'flex',
-              flexDirection: 'column',
-              boxShadow: '0 8px 32px rgba(0,0,0,0.3)',
-              overflow: 'hidden'
-            }}>
-              {/* Archive Header */}
-              <div style={{
-                padding: '20px',
-                borderBottom: '1px solid #eee',
-                background: '#f8f9fa'
-              }}>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                  <h3 style={{ margin: 0, color: '#333' }}>
-                    📦 Archive ({getArchivedPersonas().length})
-                  </h3>
-                  <button
-                    onClick={() => setShowArchiveView(false)}
-                    style={{
-                      padding: '8px 16px',
-                      background: '#6c757d',
-                      color: 'white',
-                      border: 'none',
-                      borderRadius: '6px',
-                      cursor: 'pointer'
-                    }}
-                  >
-                    Close
-                  </button>
-                </div>
-                <p style={{ margin: '8px 0 0 0', color: '#666', fontSize: '14px' }}>
-                  Personas that have been archived or deleted. You can recover them here.
-                </p>
-              </div>
-
-              {/* Archive Content */}
-              <div style={{ flex: 1, padding: '20px', overflow: 'auto' }}>
-                {getArchivedPersonas().length === 0 ? (
-                  <div style={{ textAlign: 'center', color: '#666', padding: '40px' }}>
-                    <p>No archived personas yet.</p>
-                    <p>Archived and deleted personas will appear here for recovery.</p>
-                  </div>
-                ) : (
-                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '16px' }}>
-                    {getArchivedPersonas().map((persona) => (
-                      <div
-                        key={persona.id}
-                        style={{
-                          padding: '16px',
-                          border: '1px solid #ddd',
-                          borderRadius: '8px',
-                          background: '#f8f9fa',
-                          textAlign: 'center'
-                        }}
-                      >
-                        <div style={{ fontWeight: 'bold', marginBottom: '8px' }}>
-                          {persona.name}
-                        </div>
-                        <div style={{ fontSize: '12px', color: '#666', marginBottom: '12px' }}>
-                          Communities: {persona.communities.length} |
-                          Has: {persona.hasEntries.length} |
-                          Needs: {persona.needEntries.length}
-                        </div>
-                        <button
-                          onClick={() => {
-                            // Remove from archive (make visible again)
-                            setArchivedPersonas(prev => {
-                              const newSet = new Set(prev);
-                              newSet.delete(persona.id);
-                              return newSet;
-                            });
-                            console.log('Restored persona from archive:', persona.name);
-                          }}
-                          style={{
-                            padding: '6px 12px',
-                            background: '#28a745',
-                            color: 'white',
-                            border: 'none',
-                            borderRadius: '4px',
-                            cursor: 'pointer',
-                            fontSize: '12px'
-                          }}
-                        >
-                          Recover
-                        </button>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
+        </div>
+        ))
         )}
-
-        {/* Entry Details Modal */}
-        {showEntryDetails && selectedEntry && (
-          <div style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            background: 'rgba(0,0,0,0.5)',
-            zIndex: 1001,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            padding: '20px'
-          }}>
-            <div style={{
-              background: '#fff',
-              borderRadius: '12px',
-              width: '90vw',
-              height: '70vh',
-              maxWidth: '800px',
-              minWidth: '400px',
-              minHeight: '300px',
-              display: 'flex',
-              flexDirection: 'column',
-              boxShadow: '0 8px 32px rgba(0,0,0,0.3)',
-              overflow: 'hidden'
-            }}>
-              {/* Entry Details Header */}
-              <div style={{
-                padding: '20px',
-                borderBottom: '1px solid #eee',
-                background: selectedEntry.type === 'has' ? 'linear-gradient(135deg, #28a745, #20c997)' : 'linear-gradient(135deg, #dc3545, #fd7e14)'
-              }}>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                  <h3 style={{
-                    margin: 0,
-                    color: 'white',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '12px'
-                  }}>
-                    <span style={{
-                      width: '32px',
-                      height: '32px',
-                      background: 'rgba(255,255,255,0.2)',
-                      borderRadius: '50%',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      fontSize: '16px',
-                      fontWeight: 'bold'
-                    }}>
-                      {selectedEntry.type === 'has' ? '🟢' : '🔴'}
-                    </span>
-                    {selectedEntry.type === 'has' ? 'HAS' : 'NEEDS'}: {selectedEntry.resourceType}
-                  </h3>
-                  <button
-                    onClick={() => {
-                      setShowEntryDetails(false);
-                      setSelectedEntry(null);
-                    }}
-                    style={{
-                      background: 'rgba(255,255,255,0.2)',
-                      color: 'white',
-                      border: 'none',
-                      borderRadius: '6px',
-                      padding: '8px 16px',
-                      cursor: 'pointer',
-                      fontSize: '14px'
-                    }}
-                  >
-                    ✕ Close
-                  </button>
-                </div>
-                <p style={{ margin: '8px 0 0 0', color: 'rgba(255,255,255,0.9)', fontSize: '16px' }}>
-                  {selectedEntry.description}
-                </p>
-              </div>
-
-              {/* Entry Details Content */}
-              <div style={{ flex: 1, padding: '20px', overflow: 'auto' }}>
-                <div style={{
-                  display: 'grid',
-                  gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-                  gap: '20px'
-                }}>
-                  {/* Entry Information */}
-                  <div style={{
-                    background: '#f8f9fa',
-                    borderRadius: '8px',
-                    padding: '16px'
-                  }}>
-                    <h4 style={{ margin: '0 0 12px 0', color: '#495057' }}>📋 Entry Details</h4>
-                    <div style={{ fontSize: '14px', lineHeight: '1.6' }}>
-                      <div><strong>Type:</strong> {selectedEntry.resourceType}</div>
-                      <div><strong>Status:</strong> {selectedEntry.type === 'has' ? 'Available' : 'Needed'}</div>
-                      <div><strong>Location:</strong> {Math.round(selectedEntry.coordinates.lat * 1000) / 1000}°, {Math.round(selectedEntry.coordinates.lng * 1000) / 1000}°</div>
-                      <div><strong>Created:</strong> {new Date(selectedEntry.timestamp).toLocaleString()}</div>
-                      {selectedEntry.context && Object.keys(selectedEntry.context).length > 0 && (
-                        <div style={{ marginTop: '8px' }}>
-                          <strong>Context:</strong>
-                          <ul style={{ margin: '4px 0', paddingLeft: '20px' }}>
-                            {Object.entries(selectedEntry.context).map(([key, value]) => (
-                              <li key={key}>{key}: {String(value)}</li>
-                            ))}
-                          </ul>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-
-                  {/* Match Candidates */}
-                  <div style={{
-                    background: '#f8f9fa',
-                    borderRadius: '8px',
-                    padding: '16px'
-                  }}>
-                    <h4 style={{ margin: '0 0 12px 0', color: '#495057' }}>🔗 Potential Matches</h4>
-                    <div style={{ fontSize: '14px' }}>
-                      {getMatchCandidates(selectedEntry).length > 0 ? (
-                        <div>
-                          {getMatchCandidates(selectedEntry).slice(0, 3).map((candidate, index) => (
-                            <div key={candidate.id} style={{
-                              padding: '8px',
-                              marginBottom: '8px',
-                              background: 'white',
-                              borderRadius: '6px',
-                              border: '1px solid #dee2e6'
-                            }}>
-                              <div style={{ fontWeight: 'bold', color: candidate.type === 'has' ? '#28a745' : '#dc3545' }}>
-                                {candidate.type === 'has' ? '🟢' : '🔴'} {candidate.resourceType}
-                              </div>
-                              <div style={{ fontSize: '12px', color: '#666' }}>
-                                {candidate.description}
-                              </div>
-                              <div style={{ fontSize: '11px', color: '#999', marginTop: '4px' }}>
-                                {Math.round(candidate.coordinates.lat * 1000) / 1000}°, {Math.round(candidate.coordinates.lng * 1000) / 1000}°
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      ) : (
-                        <div style={{ color: '#6c757d', fontStyle: 'italic' }}>
-                          No potential matches found
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-      </div>
     </div>
-  );
-};
+  </div>
+);
 
 export default App;
