@@ -15,8 +15,7 @@ interface GlobeProps {
   onPeerClick?: (peer: any) => void;
   width?: number;
   height?: number;
-  homeLocation?: { lat: number; lng: number };
-  onHomeClick?: () => void;
+  onMapMove?: (center: { lat: number; lng: number }) => void;
 }
 
 export const Globe: React.FC<GlobeProps> = ({
@@ -25,11 +24,12 @@ export const Globe: React.FC<GlobeProps> = ({
   peers,
   width = 740,
   height = 540,
-  homeLocation,
-  onHomeClick,
-  onEntryClick
+  onEntryClick,
+  onMapMove
 }) => {
   const mapRef = useRef<any>(null);
+  const mapElementRef = useRef<HTMLDivElement>(null);
+  const isInitializedRef = useRef(false);
 
   useEffect(() => {
     // Dynamically load Leaflet CSS if not already loaded
@@ -42,7 +42,6 @@ export const Globe: React.FC<GlobeProps> = ({
       document.head.appendChild(link);
     }
 
-    // Dynamically load Leaflet JS
     const loadLeaflet = async () => {
       if (typeof window !== 'undefined' && !(window as any).L) {
         // Load Leaflet from CDN
@@ -53,10 +52,10 @@ export const Globe: React.FC<GlobeProps> = ({
         document.head.appendChild(script);
 
         script.onload = () => {
-          initializeMap();
+          setTimeout(initializeMap, 100);
         };
       } else {
-        initializeMap();
+        setTimeout(initializeMap, 100);
       }
     };
 
@@ -64,7 +63,7 @@ export const Globe: React.FC<GlobeProps> = ({
       if (typeof window !== 'undefined' && (window as any).L) {
         const L = (window as any).L;
 
-        const mapElement = document.getElementById('leaflet-map');
+        const mapElement = mapElementRef.current;
         if (mapElement) {
           // Remove existing map if it exists
           if (mapRef.current) {
@@ -119,68 +118,22 @@ export const Globe: React.FC<GlobeProps> = ({
 
               const marker = L.marker([entry.coordinates.lat, entry.coordinates.lng], { icon: markerIcon })
                 .addTo(map)
-                .bindPopup(`
-                  <div style="font-family: sans-serif;">
-                    <h4 style="margin: 0 0 8px 0; color: ${markerColor};">${entry.type === 'has' ? '🟢 HAS' : '🔴 NEEDS'}</h4>
-                    <p style="margin: 4px 0;"><strong>Type:</strong> ${entry.resourceType}</p>
-                    <p style="margin: 4px 0;"><strong>Description:</strong> ${entry.description}</p>
-                    <p style="margin: 4px 0; font-size: 12px; color: #666;">
-                      Click to view details
-                    </p>
-                  </div>
-                `);
+                .bindPopup(
+                  '<div style="font-family: sans-serif;">' +
+                  '<h4 style="margin: 0 0 8px 0; color: ' + markerColor + ';">' + (entry.type === 'has' ? '🟢 HAS' : '🔴 NEEDS') + '</h4>' +
+                  '<p style="margin: 4px 0;"><strong>Type:</strong> ' + entry.resourceType + '</p>' +
+                  '<p style="margin: 4px 0;"><strong>Description:</strong> ' + entry.description + '</p>' +
+                  '<p style="margin: 4px 0; font-size: 12px; color: #666;">Click to view details</p>' +
+                  '</div>'
+                );
 
               marker.on('click', () => {
                 onEntryClick?.(entry);
               });
             });
 
-            // Add home button if homeLocation and onHomeClick are provided
-            if (homeLocation && onHomeClick) {
-              // Create custom home button control
-              const HomeControl = L.Control.extend({
-                options: {
-                  position: 'topleft'
-                },
-
-                onAdd: function(map: any) {
-                  const container = L.DomUtil.create('div', 'leaflet-control-home');
-                  container.style.backgroundColor = '#2e90fa';
-                  container.style.color = 'white';
-                  container.style.border = '2px solid rgba(255,255,255,0.2)';
-                  container.style.backgroundClip = 'padding-box';
-                  container.style.width = '30px';
-                  container.style.height = '30px';
-                  container.style.borderRadius = '4px';
-                  container.style.cursor = 'pointer';
-                  container.style.display = 'flex';
-                  container.style.alignItems = 'center';
-                  container.style.justifyContent = 'center';
-                  container.style.fontSize = '14px';
-                  container.style.fontWeight = 'bold';
-                  container.style.boxShadow = '0 1px 3px rgba(0,0,0,0.2)';
-                  container.style.marginTop = '10px';
-                  container.style.marginLeft = '10px';
-                  container.innerHTML = '🏠';
-
-                  container.onclick = function() {
-                    onHomeClick();
-                  };
-
-                  // Add hover effect
-                  container.onmouseover = function() {
-                    container.style.backgroundColor = '#1e7ae6';
-                  };
-                  container.onmouseout = function() {
-                    container.style.backgroundColor = '#2e90fa';
-                  };
-
-                  return container;
-                }
-              });
-
-              map.addControl(new HomeControl());
-            }
+            // Mark as initialized
+            isInitializedRef.current = true;
           } else {
             // Retry after a short delay if element doesn't have dimensions yet
             setTimeout(initializeMap, 100);
@@ -189,7 +142,14 @@ export const Globe: React.FC<GlobeProps> = ({
       }
     };
 
-    loadLeaflet();
+    if (!isInitializedRef.current) {
+      loadLeaflet();
+    } else {
+      // Update the map view if already initialized
+      if (mapRef.current && mapRef.current.setView) {
+        mapRef.current.setView([center.lat, center.lng], 13);
+      }
+    }
 
     // Cleanup function
     return () => {
@@ -198,12 +158,13 @@ export const Globe: React.FC<GlobeProps> = ({
         mapRef.current = null;
       }
     };
-  }, [center, homeLocation, onHomeClick, entries, onEntryClick]);
+  }, [center, entries, onEntryClick]);
 
   return (
     <div style={{ position: 'relative', width: '100%', height: '100%' }}>
       <div
         id="leaflet-map"
+        ref={mapElementRef}
         style={{
           width: '100%',
           height: '100%',

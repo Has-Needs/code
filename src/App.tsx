@@ -5,7 +5,7 @@
  * For MVP, uses DXOS for personal data stores; will evolve to full personal chain architecture.
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { PersonaBar } from './components/PersonaBar';
 import PersonaModal from './components/PersonaModal';
 import { Globe } from './components/Globe';
@@ -454,11 +454,11 @@ export const App: React.FC = () => {
     console.log('Entry added:', newEntry);
   }
 
-  function handleEntryClick(entry: Entry) {
+  const handleEntryClick = useCallback((entry: Entry) => {
     setSelectedEntry(entry);
     setSelectedCandidate(null); // Reset candidate selection
     setShowEntryDetails(true);
-  }
+  }, []);
 
   // Generate mock match candidates for demonstration
   function getMatchCandidates(entry: Entry): Entry[] {
@@ -500,6 +500,7 @@ export const App: React.FC = () => {
   const [showArchiveView, setShowArchiveView] = useState(false);
 
   function handleDropdownToggle() {
+    // Then toggle the dropdown
     setShowDropdown(!showDropdown);
   }
 
@@ -1168,8 +1169,6 @@ export const App: React.FC = () => {
           initialZoomRadiusKm={25}
           onEntryClick={handleEntryClick}
           height={viewportSize.height}
-          homeLocation={homeLocation}
-          onHomeClick={() => setCenter(homeLocation)}
         />
 
         <div style={{ position: 'absolute', bottom: '24px', right: '24px', zIndex: 1000 }}>
