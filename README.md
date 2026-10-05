@@ -39,4 +39,4 @@ The implementation remains **0.x** until V1 conformance criteria are demonstrate
 
 ## License
 
-See the repository `LICENSE` file. Package metadata must not be interpreted as granting rights beyond that license.
+This repository is **source-visible but not open source**. It is currently available for limited reference and evaluation under the repository `LICENSE`. Attribution is required for uses licensed by Has-Needs. Modification, redistribution, derivative works, deployment, commercial use, and AI-training use require prior written permission unless independently authorized by law or binding platform terms.
