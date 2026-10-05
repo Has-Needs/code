@@ -1,3 +1,8 @@
+# Jitterbug Port-Expansion Experiment (pre-V1)
+
+> **Status: historical transport experiment / non-normative.**  
+> This document preserves the original `open_n` port-expansion mechanism. It remains useful input to Jitterbug development, but [Has-Needs Specification V1](https://github.com/Has-Needs/docs/blob/main/Has-Needs-Spec-v1.md) now places it inside a broader transport model: semantic/network rind, store-carry-forward behavior, semantic Friend nodes, and fast/slow planes. Where this experiment conflicts with V1, V1 governs.
+
 A per‑message, header‑driven, neighbor‑aware port‑expansion rule, where  open_n  encodes the remaining ‘expansion budget’ that gradually collapses back to normal 1:1 traffic as the message propagates.
 
 ## Jitterbug Port-Expansion Rule (per message)
