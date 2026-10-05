@@ -1,0 +1,42 @@
+# Has-Needs Experimental Implementation
+
+This repository contains prototype and exploratory implementation work for the Has-Needs protocol.
+
+> **Status: pre-V1 / non-conformant prototype.**  
+> The canonical architecture is [Has-Needs Specification V1](https://github.com/Has-Needs/docs/blob/main/Has-Needs-Spec-v1.md). Code in this repository predates several clarified V1 invariants and must not be treated as normative.
+
+## What remains valuable
+
+The existing code contains useful scaffolding for:
+- the `[entity, relation, context]` triplet;
+- local Has/Need creation;
+- matching experiments;
+- identity, validation, networking, and overlay experiments;
+- Jitterbug topology exploration;
+- globe/resource-map interface work.
+
+## Known pre-V1 divergences
+
+The current prototype includes assumptions that require refactoring before V1 conformance, including:
+- `committed` where V1 uses the `WORKING` relation state;
+- locally stored collections whose scope is not explicit enough;
+- query methods such as `getAllNeeds()` that should be clearly owner- or permission-scoped;
+- matching against all locally held objects rather than semantic/routing discovery across sovereign boundaries;
+- consensus-oriented terminology that may be unnecessary for receipt-only personal chains;
+- technology choices that were explored before transport and storage were made explicitly replaceable.
+
+Local enumeration itself is valid: a participant must be able to inspect **their own** Has, Needs, Working objects, receipts, and other authorized holdings. V1 prohibits privileged network-wide enumeration of other participants' sovereign objects.
+
+## Development direction
+
+See the [Development Roadmap](https://github.com/Has-Needs/docs/blob/main/ROADMAP.md).
+
+The immediate implementation target is a minimal three-participant reference loop:
+
+`NEED → match → progressive disclosure → WORKING → completion → canonical receipt → local lineage update`
+
+The implementation remains **0.x** until V1 conformance criteria are demonstrated.
+
+## License
+
+See the repository `LICENSE` file. Package metadata must not be interpreted as granting rights beyond that license.
