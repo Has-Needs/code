@@ -1,7 +1,8 @@
 {
   "name": "has-needs-protocol",
   "version": "0.1.0",
-  "description": "World-First Protocol for Emergent Coordination, Circular Economy, and Digital Self-Determination",
+  "private": true,
+  "description": "Experimental pre-V1 implementation of the Has-Needs sovereign coordination protocol",
   "main": "src/index.js",
   "type": "module",
   "scripts": {
@@ -21,17 +22,15 @@
   "keywords": [
     "has-needs",
     "protocol",
-    "decentralized",
-    "nextgraph",
     "sovereign",
     "coordination",
-    "circular-economy",
+    "local-first",
     "mesh-network",
-    "overlays",
+    "data-sovereignty",
     "triplets"
   ],
   "author": "omdesign",
-  "license": "MIT",
+  "license": "UNLICENSED",
   "dependencies": {
     "@noble/curves": "^1.2.0",
     "@noble/hashes": "^1.3.3",
@@ -71,10 +70,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/omdesign/has-needs-live.git"
+    "url": "https://github.com/Has-Needs/code.git"
   },
   "bugs": {
-    "url": "https://github.com/omdesign/has-needs-live/issues"
+    "url": "https://github.com/Has-Needs/code/issues"
   },
-  "homepage": "https://github.com/omdesign/has-needs-live#readme"
+  "homepage": "https://github.com/Has-Needs/docs/blob/main/Has-Needs-Spec-v1.md"
 }
