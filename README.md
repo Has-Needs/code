@@ -1,42 +1,43 @@
-# Has-Needs Experimental Implementation
+# Has-Needs V1 Reference Implementation
 
-This repository contains prototype and exploratory implementation work for the Has-Needs protocol.
+This branch is the clean reference implementation for the Has-Needs V1 specification.
 
-> **Status: pre-V1 / non-conformant prototype.**  
-> The canonical architecture is [Has-Needs Specification V1](https://github.com/Has-Needs/docs/blob/main/Has-Needs-Spec-v1.md). Code in this repository predates several clarified V1 invariants and must not be treated as normative.
+The previous implementation is preserved on `legacy-pre-v1`.
 
-## What remains valuable
+## Authority
 
-The existing code contains useful scaffolding for:
-- the `[entity, relation, context]` triplet;
-- local Has/Need creation;
-- matching experiments;
-- identity, validation, networking, and overlay experiments;
-- Jitterbug topology exploration;
-- globe/resource-map interface work.
+The V1 specification is authoritative. This code exists to prove the architecture and produce conformance tests.
 
-## Known pre-V1 divergences
+## First proof
 
-The current prototype includes assumptions that require refactoring before V1 conformance, including:
-- `committed` where V1 uses the `WORKING` relation state;
-- locally stored collections whose scope is not explicit enough;
-- query methods such as `getAllNeeds()` that should be clearly owner- or permission-scoped;
-- matching against all locally held objects rather than semantic/routing discovery across sovereign boundaries;
-- consensus-oriented terminology that may be unnecessary for receipt-only personal chains;
-- technology choices that were explored before transport and storage were made explicitly replaceable.
+The first implementation slice is intentionally small:
 
-Local enumeration itself is valid: a participant must be able to inspect **their own** Has, Needs, Working objects, receipts, and other authorized holdings. V1 prohibits privileged network-wide enumeration of other participants' sovereign objects.
+`NEED + HAS → candidate → mutual acceptance → WORKING → completion → canonical receipt`
 
-## Development direction
+No global inventory, no reputation score, no hidden authority.
 
-See the [Development Roadmap](https://github.com/Has-Needs/docs/blob/main/ROADMAP.md).
+## Principles
 
-The immediate implementation target is a minimal three-participant reference loop:
+- `[ENTITY, RELATION, CONTEXT]` is the canonical semantic form.
+- RELATION is exactly `HAS`, `NEED`, or `WORKING`.
+- Has and Need are sovereign objects.
+- Candidate matching is advisory; human acceptance is authoritative.
+- WORKING is created only after mutual acceptance.
+- Completion creates one canonical receipt shared by the participants.
+- Owner-local enumeration is valid; unauthorized network-wide enumeration is not.
+- Transport, trust, crypto, Persona/OCA, and UI attach to this lifecycle rather than redefining it.
 
-`NEED → match → progressive disclosure → WORKING → completion → canonical receipt → local lineage update`
+## Run
 
-The implementation remains **0.x** until V1 conformance criteria are demonstrated.
+```bash
+npm install
+npm test
+```
 
-## License
+## Structure
 
-This repository is **source-visible but not open source**. It is currently available for limited reference and evaluation under the repository `LICENSE`. Attribution is required for uses licensed by Has-Needs. Modification, redistribution, derivative works, deployment, commercial use, and AI-training use require prior written permission unless independently authorized by law or binding platform terms.
+- `src/core` — canonical objects and lifecycle
+- `src/sovereign` — owner-local storage
+- `src/matching` — advisory candidate generation
+- `tests` — conformance tests
+- `demo-artifacts` — human-facing interaction designs
