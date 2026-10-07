@@ -9,12 +9,14 @@ Has-Needs is at a stage where careful criticism and small, testable implementati
 1. Read the [Has-Needs Specification V1](https://github.com/Has-Needs/docs/blob/main/Has-Needs-Spec-v1.md).
 2. Read the [Development Roadmap](https://github.com/Has-Needs/docs/blob/main/ROADMAP.md).
 3. Treat current code as experimental 0.x work, not as the source of protocol truth.
+4. Use V1 as the implementation cutover. Existing code imposes no compatibility or reuse requirement; fresh implementations are welcome. Judge any retained component against V1, not the reverse.
+5. Use [reference-loop issue #2](https://github.com/Has-Needs/code/issues/2) and the [Need Configurator demonstrator brief](demo-artifacts/need-configurator/README.md) to distinguish a bounded demonstration from completion of the full milestone.
 
 ## Especially useful contributions
 
 - identify contradictions or underspecified invariants;
 - build small conformance tests;
-- implement one complete Has → Need → Working → receipt lifecycle;
+- implement independent Has and Need creation, mutual acceptance into Working, and completion into one canonical receipt with participant-local chain evidence;
 - test owner-scoped enumeration and network non-enumerability;
 - prototype progressive disclosure;
 - prototype live chain-hop vetting and visible relationship distance;
