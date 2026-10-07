@@ -5,7 +5,11 @@ This repository contains prototype and exploratory implementation work for the H
 > **Status: pre-V1 / non-conformant prototype.**  
 > The canonical architecture is [Has-Needs Specification V1](https://github.com/Has-Needs/docs/blob/main/Has-Needs-Spec-v1.md). Code in this repository predates several clarified V1 invariants and must not be treated as normative.
 
-## What remains valuable
+## V1 implementation cutover
+
+V1 governs all new implementation work. Existing code is historical experimental material and imposes no compatibility or reuse requirement. A fresh implementation is permitted; retaining a component is an implementation choice, not an architectural obligation. Evaluate new work against V1 and its conformance criteria, not against legacy behavior.
+
+## Optional historical scaffolding
 
 The existing code contains useful scaffolding for:
 - the `[entity, relation, context]` triplet;
@@ -17,7 +21,7 @@ The existing code contains useful scaffolding for:
 
 ## Known pre-V1 divergences
 
-The current prototype includes assumptions that require refactoring before V1 conformance, including:
+Historical prototype assumptions must not be carried into a V1 implementation where they conflict with the specification. Examples include:
 - `committed` where V1 uses the `WORKING` relation state;
 - locally stored collections whose scope is not explicit enough;
 - query methods such as `getAllNeeds()` that should be clearly owner- or permission-scoped;
@@ -33,7 +37,9 @@ See the [Development Roadmap](https://github.com/Has-Needs/docs/blob/main/ROADMA
 
 The immediate implementation target is a minimal three-participant reference loop:
 
-`NEED → match → progressive disclosure → WORKING → completion → canonical receipt → local lineage update`
+Alice creates `NEED`; Bob creates `HAS`; Carol assists scoped discovery. Progressive disclosure and explicit acceptance by both parties establish `WORKING`. Completion produces the same canonical receipt for Alice and Bob, separate participant-local chain entries, and local lineage/resolution evidence updates.
+
+See [reference-loop issue #2](https://github.com/Has-Needs/code/issues/2) for the full milestone and the [Need Configurator demonstrator brief](demo-artifacts/need-configurator/README.md) for the bounded interaction flow.
 
 The implementation remains **0.x** until V1 conformance criteria are demonstrated.
 
