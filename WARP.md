@@ -5,9 +5,12 @@
 ## Read first
 1. `warp-agents/THIS_IS_NOT.md` — familiar patterns to reject and what replaces them.
 2. `warp-agents/INNOVATION_PROTOCOL.md` — how to make independent, evidence-driven design choices.
-3. [Canonical Specification V1](https://github.com/Has-Needs/docs/blob/main/Has-Needs-Spec-v1.md).
-4. [Roadmap](https://github.com/Has-Needs/docs/blob/main/ROADMAP.md), [Need Configurator brief](demo-artifacts/need-configurator/README.md), and [three-participant implementation issue #2](https://github.com/Has-Needs/code/issues/2).
-5. [Contract primitives working list](https://github.com/Has-Needs/docs/blob/main/CONTRACT_PRIMITIVES.md) **as a proposed amendment**, not yet an adopted V1 requirement.
+3. `warp-agents/DESIGN_PHILOSOPHY_AND_MODULES.md` — overarching philosophy and stable module interfaces.
+4. `warp-agents/CRYPTO_AGILITY.md` — suite versioning, proof continuity and post-quantum migration.
+5. `warp-agents/FIRST_CONTACT_TRIAL.md` — design-only cold-start evaluation; **do not read this during the unprimed run**.
+6. [Canonical Specification V1](https://github.com/Has-Needs/docs/blob/main/Has-Needs-Spec-v1.md).
+7. [Roadmap](https://github.com/Has-Needs/docs/blob/main/ROADMAP.md), [Need Configurator brief](demo-artifacts/need-configurator/README.md), and [three-participant implementation issue #2](https://github.com/Has-Needs/code/issues/2).
+8. [Contract primitives working list](https://github.com/Has-Needs/docs/blob/main/CONTRACT_PRIMITIVES.md) **as a proposed amendment**, not yet an adopted V1 requirement.
 
 ## Guiding proposition
 
@@ -37,6 +40,6 @@ These are architectural guardrails, **not bans** on ordinary web technology, con
 - Leave normative spec changes, ownership/consent boundary changes, and release designations for project-lead review. Make ordinary technical decisions autonomously, document the alternatives and tests, and favor reversible choices.
 
 ## Warp's default process
-For every substantive feature: **human outcome → controlling invariants → conventional shortcut declined → chosen minimal mechanism → falsifying test → observed result → unresolved design question**. Implement the smallest observable vertical slice and report actual test evidence, rather than expanding features to fit a conventional framework.
+For every architectural milestone (not every micro-edit): **human outcome → controlling invariants → conventional shortcut declined → chosen minimal mechanism → falsifying test → observed result → unresolved design question**. Establish one coherent cross-module design, then implement a single observable vertical slice and report actual test evidence, rather than expanding features to fit a conventional framework.
 
 Your job is to discover better implementations of Has-Needs, not to normalize Has-Needs into existing software categories.
