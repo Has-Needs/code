@@ -35,6 +35,37 @@ Useful references:
 - https://wiki.openstreetmap.org/wiki/Micromapping — very small pedestrian features and objects
 - https://wiki.openstreetmap.org/wiki/Guidelines_for_pedestrian_navigation — indoor connections and floor transitions
 
+## Paths as private, participant-created geographic memory
+
+**Primary use case — personal memory, not publication.** A person can tap **Start**, walk a path, tap **Stop**, and give it a human label. The result is a locally retained piece of *their own geographic knowledge*. They might label it “favorite shady path,” “avoids poison ivy,” “route I used yesterday,” or “possible unexploded-ordnance hazard nearby.” **No sharing, upload, listing, marketplace offer, community membership, exchange or automatic creation of a published HAS is required.** Saving knowledge for oneself is a complete and valuable action.
+
+A path can be viewed again, annotated, compared with alternatives, edited, or deleted locally. The user controls retention, access and disclosure. The app should not collect or transmit the user's route as telemetry merely to render it. A base map, map tile provider, relay, or optional cloud backup does not become the authority over the recorded geometry or its annotations.
+
+### Human interaction
+
+1. **Tap Start** — begin opt-in, clearly indicated local route capture. Request only the location permissions necessary. Use a simple touch target; do not require map-editing expertise.
+2. **Walk** — record available position fixes with uncertainty; preserve useful sequence and context. Do not confuse dense samples or a visually smooth line with centimeter accuracy. Allow approximate landmark-relative annotations when device GPS is unreliable.
+3. **Tap Stop** — finish locally. Preview the line and, if necessary, trim stray fixes or correct a section.
+4. **Label it** — a simple name in the user's own vocabulary. Optional notes may include accessibility, surface, preferred conditions, hazards, dates, photographs or alternative routes. The map can display this as a layered mathematical/geometric object.
+5. **Remember privately** — save it as the participant's own object/history. No default social feed, map submission, monetization prompt or need to share.
+6. **Optionally offer it later** — only on explicit choice, the participant may disclose a limited view, gift it, or express an independently addressable `HAS` of route knowledge/access under their own terms. Sharing or payment is a *possible subsequent relationship*, not the reason the object exists.
+
+### Semantic and modular boundary
+
+**Private observation → optional authorized projection → optional Has/Need exchange.** These must be distinct operations. A recorded path is not automatically public geographic data and not automatically a Has offered to others. Geography is useful even when no transaction occurs.
+
+Separate the local geometry/notes store from the participant's persona/disclosure policy, semantic object engine, matching, map rendering and optional receipt/contract machinery. Swapping Leaflet for a globe or a text renderer must neither erase the private path nor make it public.
+
+If the person elects to share or license their *contribution*, keep origin and agreed terms where applicable. The act of mapping does not establish exclusive ownership of the physical trail or geographic facts; legal rights in recordings and map data vary. Disclosing a copy may be irreversible even if later access is revoked.
+
+**Safety and uncertainty:** Labels such as “landmine-free” or “safe route” must not be converted into verified safety guarantees. Conditions change, and a recorded absence of hazards is not evidence that unexploded ordnance is absent. Expose provenance, last observation date, uncertainty and suitable caution; do not automatically optimize routes through suspected hazardous areas.
+
+### Warp acceptance demonstration
+
+With synthetic local data, show a participant record, label, retain and redisplay a walking route **without any remote account, network request, Has offer or community sharing**. Reopen it offline and render it through a different view. Then show that optional recipient-scoped sharing is a *separate, explicit action*. Verify that changing renderers does not change object ownership or release undisclosed positions.
+
+**Foundational principle:** The participant's lived experience can produce durable private geographic knowledge. A marketplace is only one optional way that knowledge may later be used.
+
 ## Target qualities
 
 - **Fast and lightweight on ordinary phones.** Favor small initial bundles, lazy-loaded advanced layers, optional tiles for context, local microfeature overlays, spatial indexing and semantic level-of-detail rendering. Measure load time, memory, battery and frame pacing on representative low-end hardware, including intermittently connected devices. Do not promise a specific footprint or frame rate until measured.
