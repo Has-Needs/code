@@ -37,7 +37,7 @@ See the [Development Roadmap](https://github.com/Has-Needs/docs/blob/main/ROADMA
 
 The immediate implementation target is a minimal three-participant reference loop:
 
-Alice creates `NEED`; Bob creates `HAS`; Carol assists scoped discovery. Progressive disclosure and explicit acceptance by both parties establish `WORKING`. Completion produces the same canonical receipt for Alice and Bob, separate participant-local chain entries, and local lineage/resolution evidence updates.
+Alice creates a `NEED` holding executable conditions; Bob creates a `HAS`; Carol assists scoped discovery. Mutual match acceptance puts the Has and Need together in `WORKING` while the Need executes. Once both independently confirm the exchange, Alice and Bob may each add optional personally controlled comments, choose plaintext or encryption, and see the other's planned exposure. Each then marks **Ready to commit** on the same version. Their Persona Managers—concierges that alone maintain and operate their owners' permanently private personal chains—coordinate writing identical canonical transaction receipts, including protected communications. The matching hashes establish completion without an extra status label. No user-created persona or counterparty receives direct chain access.
 
 See [reference-loop issue #2](https://github.com/Has-Needs/code/issues/2) for the full milestone and the [Need Configurator demonstrator brief](demo-artifacts/need-configurator/README.md) for the bounded interaction flow.
 
