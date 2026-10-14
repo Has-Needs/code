@@ -1,0 +1,52 @@
+{
+  "note": "Illustrative invented tabletop fixture, NOT experimental data or results",
+  "participants": [
+    {
+      "role": "vendor",
+      "persona": "Bob the Builder",
+      "other_persona_not_disclosed": "Flaky 6-9"
+    },
+    {
+      "role": "customer",
+      "persona": "Customer"
+    }
+  ],
+  "need": {
+    "name": "Deck repair",
+    "conditions": [
+      "agreed repair delivered",
+      "both participants confirm completion"
+    ]
+  },
+  "has": {
+    "name": "Carpentry labor"
+  },
+  "communications": [
+    {
+      "from": "Customer",
+      "text": "Please repair the damaged deck boards."
+    },
+    {
+      "from": "Bob the Builder",
+      "text": "I can perform the agreed repairs."
+    }
+  ],
+  "optional_comments": [
+    {
+      "from": "Customer",
+      "comment": "I was disappointed by the delay.",
+      "visibility": "encrypted"
+    },
+    {
+      "from": "Bob the Builder",
+      "comment": "The supplied materials arrived late.",
+      "visibility": "plaintext"
+    }
+  ],
+  "required_precommit": [
+    "each controls only own metadata/exposure",
+    "both can inspect proposed metadata and exposure settings",
+    "each marks ready on exactly the same record version"
+  ],
+  "expected_result": "identical canonical receipts in separate private Persona-Manager-maintained chains; no cross-persona identifier or added verification label"
+}

@@ -1,0 +1,13 @@
+{
+  "status": "historical reported values; not reproduced",
+  "source": "simulations/simulation_report.md",
+  "raw_data_available": false,
+  "reproduction_verified": false,
+  "values": {
+    "sybils_reported": 100,
+    "sybils_detected_reported": 73,
+    "false_positives_reported": 0,
+    "false_negatives_reported": 27,
+    "reported_detection_percent": 73
+  }
+}

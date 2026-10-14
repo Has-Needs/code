@@ -1,0 +1,11 @@
+{
+  "status": "historical reported values; not reproduced",
+  "source": "simulations/simulation_report.md",
+  "raw_data_available": false,
+  "reproduction_verified": false,
+  "values": {
+    "reported_interactions": 50000,
+    "reported_access_attempts": 10000,
+    "reported_unconsented_disclosures": 0
+  }
+}

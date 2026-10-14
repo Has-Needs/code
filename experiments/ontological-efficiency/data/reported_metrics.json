@@ -1,0 +1,11 @@
+{
+  "status": "historical reported values; not reproduced",
+  "source": "simulations/simulation_report.md",
+  "raw_data_available": false,
+  "reproduction_verified": false,
+  "values": {
+    "hn_latency_ms_reported": 0.0193,
+    "baseline_latency_ms_reported": 25.472,
+    "reduction_percent_reported": 99.92
+  }
+}

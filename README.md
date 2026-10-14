@@ -1,48 +1,11 @@
-# Has-Needs Experimental Implementation
+# Has-Needs experiments
 
-This repository contains prototype and exploratory implementation work for the Has-Needs protocol.
+**Start with the [experiment index](./experiments/README.md)**. Each experiment has its own folder with its purpose, code, data or fixtures, recorded results and limitations. There is no need to search the existing application or dependency trees to understand a test.
 
-> **Status: pre-V1 / non-conformant prototype.**  
-> The canonical architecture is [Has-Needs Specification V1](https://github.com/Has-Needs/docs/blob/main/Has-Needs-Spec-v1.md). Code in this repository predates several clarified V1 invariants and must not be treated as normative.
+**Current status:** Three older Python simulations have been gathered as historical experiments but are **not verified V1 results**. The first V1 reference exchange and Need Configurator are planned prototype fixtures, **not functioning code** yet.
 
-## V1 implementation cutover
+The [Has-Needs V1 specification](https://github.com/Has-Needs/docs/blob/main/Has-Needs-Spec-v1.md) governs new work. The previously checked-in `src/`, `protocol/`, `packages/`, and `node_modules/` trees remain unchanged for historical continuity; they are **not** the recommended reading path and are not asserted to conform to V1.
 
-V1 governs all new implementation work. Existing code is historical experimental material and imposes no compatibility or reuse requirement. A fresh implementation is permitted; retaining a component is an implementation choice, not an architectural obligation. Evaluate new work against V1 and its conformance criteria, not against legacy behavior.
+New work: [reference exchange](./experiments/reference-exchange/README.md) · [Need Configurator](./experiments/need-configurator/README.md) · [experiment template](./experiments/_template/README.md).
 
-## Optional historical scaffolding
-
-The existing code contains useful scaffolding for:
-- the `[entity, relation, context]` triplet;
-- local Has/Need creation;
-- matching experiments;
-- identity, validation, networking, and overlay experiments;
-- Jitterbug topology exploration;
-- globe/resource-map interface work.
-
-## Known pre-V1 divergences
-
-Historical prototype assumptions must not be carried into a V1 implementation where they conflict with the specification. Examples include:
-- `committed` where V1 uses the `WORKING` relation state;
-- locally stored collections whose scope is not explicit enough;
-- query methods such as `getAllNeeds()` that should be clearly owner- or permission-scoped;
-- matching against all locally held objects rather than semantic/routing discovery across sovereign boundaries;
-- consensus-oriented terminology that may be unnecessary for receipt-only personal chains;
-- technology choices that were explored before transport and storage were made explicitly replaceable.
-
-Local enumeration itself is valid: a participant must be able to inspect **their own** Has, Needs, Working objects, receipts, and other authorized holdings. V1 prohibits privileged network-wide enumeration of other participants' sovereign objects.
-
-## Development direction
-
-See the [Development Roadmap](https://github.com/Has-Needs/docs/blob/main/ROADMAP.md).
-
-The immediate implementation target is a minimal three-participant reference loop:
-
-Alice creates a `NEED` holding executable conditions; Bob creates a `HAS`; Carol assists scoped discovery. Mutual match acceptance puts the Has and Need together in `WORKING` while the Need executes. Once both independently confirm the exchange, Alice and Bob may each add optional personally controlled comments, choose plaintext or encryption, and see the other's planned exposure. Each then marks **Ready to commit** on the same version. Their Persona Managers—concierges that alone maintain and operate their owners' permanently private personal chains—coordinate writing identical canonical transaction receipts, including protected communications. The matching hashes establish completion without an extra status label. No user-created persona or counterparty receives direct chain access.
-
-See [reference-loop issue #2](https://github.com/Has-Needs/code/issues/2) for the full milestone and the [Need Configurator demonstrator brief](demo-artifacts/need-configurator/README.md) for the bounded interaction flow.
-
-The implementation remains **0.x** until V1 conformance criteria are demonstrated.
-
-## License
-
-This repository is **source-visible but not open source**. It is currently available for limited reference and evaluation under the repository `LICENSE`. Attribution is required for uses licensed by Has-Needs. Modification, redistribution, derivative works, deployment, commercial use, and AI-training use require prior written permission unless independently authorized by law or binding platform terms.
+**License:** Source-visible for evaluation, not open source. See [LICENSE](./LICENSE).

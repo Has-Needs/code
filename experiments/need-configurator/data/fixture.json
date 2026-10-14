@@ -1,0 +1,12 @@
+{
+  "note": "Invented demonstration input, not a result",
+  "user_text": "I need help repairing a damaged roof before the next storm.",
+  "expected_relation": "NEED",
+  "desired_outcome": "The agreed damaged section is repaired before the deadline.",
+  "conditions": [
+    "agree on repair scope",
+    "both later verify task completion"
+  ],
+  "persona": "Homeowner",
+  "disclosure": "location and identity withheld unless specifically authorized"
+}
