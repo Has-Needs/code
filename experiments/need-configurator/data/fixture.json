@@ -1,6 +1,5 @@
 {
-  "note": "Invented demonstration input, not a result",
-  "user_text": "I need help repairing a damaged roof before the next storm.",
+  "note": "Illustrative fixture, not implemented controls or a measured result",
   "expected_relation": "NEED",
   "desired_outcome": "The agreed damaged section is repaired before the deadline.",
   "conditions": [
@@ -8,5 +7,11 @@
     "both later verify task completion"
   ],
   "persona": "Homeowner",
-  "disclosure": "location and identity withheld unless specifically authorized"
+  "disclosure": "location and identity withheld unless specifically authorized",
+  "input_mode": "provided graphical Need control",
+  "local_meaning": {
+    "chosen_by_participant": "roof repair before next storm",
+    "display": "participant-chosen symbol or local wording"
+  },
+  "basic_contract_choice": "provided standard service/receiving option (illustrative; final official vocabulary under specification refinement)"
 }
