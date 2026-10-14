@@ -10,6 +10,8 @@ One folder per experiment. **Code, input data/fixtures, report, limitations, and
 | [Ontological efficiency](./ontological-efficiency/README.md) | Historical; incomplete | Placeholder benchmark script; reported metrics not reproducible |
 | [Privacy robustness](./privacy-robustness/README.md) | Historical; incomplete | Empty interaction loop; reported “zero disclosures” not a validated result |
 
+**Foundational V1 test requirement:** A participant must be able to express an unfamiliar Need without any preloaded category or required written label, using their own local dialect or an accessible nonwritten mode. Human-curated interpretations can spread from a personal context into neighboring, authorized ontologies. This behavior is planned, **not demonstrated by the existing scripts**. The first Need Configurator prototype should test it and save actual outcomes under its directory.
+
 ## How experiment folders work
 
 ```text
